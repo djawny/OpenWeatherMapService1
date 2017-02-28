@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,13 +40,18 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean success = intent.getBooleanExtra("SUCCESS", false);
             if (success) {
-                mTemp.setText(intent.getStringExtra("TEMPERATURE"));
-                mPressure.setText(intent.getStringExtra("PRESSURE"));
+                mTemp.setText(String.format("%s C", intent.getDoubleExtra("TEMPERATURE", 0)));
+                mPressure.setText(String.format("%s hpa", intent.getIntExtra("PRESSURE", 0)));
                 mMain.setText(intent.getStringExtra("MAIN"));
+                long time = intent.getLongExtra("DATE", 0);
+                mDate.setText(String.format("%s", time));
+                String icon = intent.getStringExtra("ICON");
+                Picasso.with(getApplicationContext())
+                        .load("http://openweathermap.org/img/w/" + icon + ".png")
+                        .into(mIcon);
             }
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

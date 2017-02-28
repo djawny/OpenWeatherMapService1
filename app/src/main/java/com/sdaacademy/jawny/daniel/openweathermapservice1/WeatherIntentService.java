@@ -3,6 +3,7 @@ package com.sdaacademy.jawny.daniel.openweathermapservice1;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,11 +42,21 @@ public class WeatherIntentService extends IntentService {
         Intent intent = new Intent();
         intent.setAction("CURRENT_WEATHER_RESPONSE");
         intent.putExtra("SUCCESS", true);
-        intent.putExtra("TEMPERATURE", jsonObject.optDouble("temp"));
-        intent.putExtra("PRESSURE", jsonObject.optDouble("temp"));
-        intent.putExtra("MAIN", jsonObject.optDouble("temp"));
-        intent.putExtra("DATE", jsonObject.optDouble("temp"));
-        intent.putExtra("ICON", jsonObject.optDouble("temp"));
+        String temp = jsonObject.getJSONObject("main").optString("temp");
+        Log.i("json", temp);
+        intent.putExtra("TEMPERATURE", temp);
+        String pressure = jsonObject.getJSONObject("main").optString("pressure");
+        Log.i("json", pressure);
+        intent.putExtra("PRESSURE", pressure);
+        String main = jsonObject.getJSONArray("weather").getJSONObject(0).optString("main");
+        Log.i("json", main);
+        intent.putExtra("MAIN", main);
+        String date = jsonObject.optString("dt");
+        Log.i("json", date);
+        intent.putExtra("DATE", date);
+        String icon = jsonObject.getJSONArray("weather").getJSONObject(0).optString("icon");
+        Log.i("json", icon);
+        intent.putExtra("ICON", icon);
         broadcastManager.sendBroadcast(intent);
 
     }

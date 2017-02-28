@@ -36,19 +36,23 @@ public class WeatherIntentService extends IntentService {
     }
 
     private void getCurrentWeather(String city) throws IOException, JSONException {
-        JSONObject jsonObject =new JSONObject(sentRequest(city));
+        JSONObject jsonObject = new JSONObject(sentRequest(city));
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent();
         intent.setAction("CURRENT_WEATHER_RESPONSE");
         intent.putExtra("SUCCESS", true);
         intent.putExtra("TEMPERATURE", jsonObject.optDouble("temp"));
+        intent.putExtra("PRESSURE", jsonObject.optDouble("temp"));
+        intent.putExtra("MAIN", jsonObject.optDouble("temp"));
+        intent.putExtra("DATE", jsonObject.optDouble("temp"));
+        intent.putExtra("ICON", jsonObject.optDouble("temp"));
         broadcastManager.sendBroadcast(intent);
 
     }
 
     private String sentRequest(String city) throws JSONException, IOException {
         Request request = new Request.Builder()
-                .url("http://api.openweathermap.org/data/2.5/weather?appid=779bcb1c99f4dcd8ffe6b596d5dc919d&q=" + city)
+                .url("http://api.openweathermap.org/data/2.5/weather?appid=779bcb1c99f4dcd8ffe6b596d5dc919d&units=metric&lang=pl&q=" + city)
                 .build();
         OkHttpClient client = new OkHttpClient();
         return client.newCall(request).execute().body().string();

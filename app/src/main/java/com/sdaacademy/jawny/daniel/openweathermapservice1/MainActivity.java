@@ -1,5 +1,6 @@
 package com.sdaacademy.jawny.daniel.openweathermapservice1;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,20 +42,23 @@ public class MainActivity extends AppCompatActivity {
     public void getButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.getWarsaw:
-                getWeather("Warsaw");
+                Intent intent1 = new Intent(this, WeatherIntentService.class)
+                        .setAction("GET_CURRENT_WEATHER")
+                        .putExtra("CITY", "Warsaw");
+                startService(intent1);
                 break;
             case R.id.getLondon:
-                getWeather("London");
+                Intent intent2 = new Intent(this, WeatherIntentService.class)
+                        .setAction("GET_CURRENT_WEATHER")
+                        .putExtra("CITY", "London");
+                startService(intent2);
                 break;
             case R.id.getNewYork:
-                getWeather("New York");
+                Intent intent3 = new Intent(this, WeatherIntentService.class)
+                        .setAction("GET_CURRENT_WEATHER")
+                        .putExtra("CITY", "NewYork");
+                startService(intent3);
                 break;
         }
     }
-
-    private void getWeather(String city) {
-
-    }
-
-
 }

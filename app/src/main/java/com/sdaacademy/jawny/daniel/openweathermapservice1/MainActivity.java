@@ -1,6 +1,10 @@
 package com.sdaacademy.jawny.daniel.openweathermapservice1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +31,19 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.icon)
     ImageView mIcon;
+    private LocalBroadcastManager broadcastManager;
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean success = intent.getBooleanExtra("SUCCESS", false);
+            if (success) {
+                mTemp.setText(intent.getStringExtra("TEMPERATURE"));
+                mPressure.setText(intent.getStringExtra("PRESSURE"));
+                mMain.setText(intent.getStringExtra("MAIN"));
+            }
+        }
+    };
 
 
     @Override
@@ -35,7 +52,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("CURRENT_WEATHER_RESPONSE");
+        broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.registerReceiver(broadcastReceiver, filter);
+    }
 
+    @Override
+    protected void onDestroy() {
+        broadcastManager.unregisterReceiver(broadcastReceiver);
+        super.onDestroy();
     }
 
     @OnClick({R.id.getWarsaw, R.id.getLondon, R.id.getNewYork})

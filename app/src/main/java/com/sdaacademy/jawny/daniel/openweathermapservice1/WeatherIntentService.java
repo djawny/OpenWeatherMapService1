@@ -58,7 +58,6 @@ public class WeatherIntentService extends IntentService {
         Log.i("json", icon);
         intent.putExtra("ICON", icon);
         broadcastManager.sendBroadcast(intent);
-
     }
 
     private String sentRequest(String city) throws JSONException, IOException {

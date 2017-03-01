@@ -26,16 +26,12 @@ public class WeatherIntentService extends IntentService {
                 String city = intent.getStringExtra("CITY");
                 try {
                     getCurrentWeather(city);
-                } catch (IOException e) {
-                    Intent intent1 = new Intent();
-                    intent1.setAction("CURRENT_WEATHER_RESPONSE");
-                    intent1.putExtra("SUCCESS", false);
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    Intent intent1 = new Intent();
-                    intent1.setAction("CURRENT_WEATHER_RESPONSE");
-                    intent1.putExtra("SUCCESS", false);
-                    e.printStackTrace();
+                } catch (IOException | JSONException e) {
+                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+                    Intent broadcastIntent = new Intent();
+                    broadcastIntent.setAction("CURRENT_WEATHER_RESPONSE");
+                    broadcastIntent.putExtra("SUCCESS", false);
+                    broadcastManager.sendBroadcast(broadcastIntent);
                 }
             }
         }
@@ -43,19 +39,20 @@ public class WeatherIntentService extends IntentService {
 
     private void getCurrentWeather(String city) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject(sentRequest(city));
+        double temp = jsonObject.getJSONObject("main").optDouble("temp");
+        int pressure = jsonObject.getJSONObject("main").optInt("pressure");
+        String main = jsonObject.getJSONArray("weather").getJSONObject(0).optString("main");
+        long date = jsonObject.optLong("dt");
+        String icon = jsonObject.getJSONArray("weather").getJSONObject(0).optString("icon");
+
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent();
         intent.setAction("CURRENT_WEATHER_RESPONSE");
         intent.putExtra("SUCCESS", true);
-        double temp = jsonObject.getJSONObject("main").optDouble("temp");
         intent.putExtra("TEMPERATURE", temp);
-        int pressure = jsonObject.getJSONObject("main").optInt("pressure");
         intent.putExtra("PRESSURE", pressure);
-        String main = jsonObject.getJSONArray("weather").getJSONObject(0).optString("main");
         intent.putExtra("MAIN", main);
-        long date = jsonObject.optLong("dt");
         intent.putExtra("DATE", date);
-        String icon = jsonObject.getJSONArray("weather").getJSONObject(0).optString("icon");
         intent.putExtra("ICON", icon);
         broadcastManager.sendBroadcast(intent);
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean success = intent.getBooleanExtra("SUCCESS", false);
             if (success) {
-                mTemp.setText(String.format("%s C", intent.getDoubleExtra("TEMPERATURE", 0)));
+                String temperature = String.format("%s C", intent.getDoubleExtra("TEMPERATURE", 0));
+                mTemp.setText(temperature);
                 mPressure.setText(String.format("%s hpa", intent.getIntExtra("PRESSURE", 0)));
                 mMain.setText(intent.getStringExtra("MAIN"));
                 long time = intent.getLongExtra("DATE", 0);
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 Picasso.with(getApplicationContext())
                         .load("http://openweathermap.org/img/w/" + icon + ".png")
                         .into(mIcon);
+            } else {
+                showError("Pobranie pogody zakończyło się niepowodzeniem");
             }
         }
     };
@@ -93,5 +97,12 @@ public class MainActivity extends AppCompatActivity {
                 startService(intent3);
                 break;
         }
+    }
+
+    public void showError(String message) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("Ok", null)
+                .show();
     }
 }

@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         .putExtra("CITY", "NewYork");
                 startService(intent3);
                 break;
-            case R.id.city:
+            case R.id.getCity:
                 Intent intent4 = new Intent(this, WeatherIntentService.class)
                         .setAction("GET_CURRENT_WEATHER")
                         .putExtra("CITY", mCity.getText().toString());

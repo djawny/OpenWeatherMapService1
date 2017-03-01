@@ -14,6 +14,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 mTemp.setText(temperature);
                 mPressure.setText(String.format("%s hpa", intent.getIntExtra("PRESSURE", 0)));
                 mMain.setText(intent.getStringExtra("MAIN"));
-                long time = intent.getLongExtra("DATE", 0);
-                mDate.setText(String.format("%s", time));
+                String dateString = convertDate(intent.getLongExtra("DATE", 0));
+                mDate.setText(String.format("%s", dateString));
                 String icon = intent.getStringExtra("ICON");
                 Picasso.with(getApplicationContext())
                         .load("http://openweathermap.org/img/w/" + icon + ".png")
@@ -56,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    private String convertDate(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTimeInMillis(timestamp * 1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(calendar.getTime());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

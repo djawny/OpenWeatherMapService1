@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,9 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.city)
+    EditText mCity;
+
     @BindView(R.id.temp)
     TextView mTemp;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.icon)
     ImageView mIcon;
+
     private LocalBroadcastManager broadcastManager;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @OnClick({R.id.getWarsaw, R.id.getLondon, R.id.getNewYork})
+    @OnClick({R.id.getWarsaw, R.id.getLondon, R.id.getNewYork, R.id.getCity})
     public void getButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.getWarsaw:
@@ -107,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("GET_CURRENT_WEATHER")
                         .putExtra("CITY", "NewYork");
                 startService(intent3);
+                break;
+            case R.id.city:
+                Intent intent4 = new Intent(this, WeatherIntentService.class)
+                        .setAction("GET_CURRENT_WEATHER")
+                        .putExtra("CITY", mCity.getText().toString());
+                startService(intent4);
                 break;
         }
     }
